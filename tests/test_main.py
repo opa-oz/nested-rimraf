@@ -30,6 +30,22 @@ def test_scan_default():
     assert all([p in result.stdout for p in output])
 
 
+def test_scan_without_directory():
+    output = ['Files and directories (include symlinks):',
+              '→ subject/node_modules',
+              '→ subject/symlink/node_modules',
+              '→ subject/file/node_modules',
+              '→ subject/sub/node_modules',
+              '→ subject/sub/3/node_modules',
+              '→ subject/sub/2/1/4/node_modules',
+              '→ subject/sub2/node_modules', ]
+    update_subject()
+    result = runner.invoke(app, ['scan', 'node_modules'])
+
+    assert result.exit_code == 0
+    assert all([p in result.stdout for p in output])
+
+
 def test_scan_only_directories():
     output = ['Directories (include symlinks):',
               '→ subject/node_modules',
@@ -140,7 +156,7 @@ def test_save_to_custom_file():
     path_to_file = Path(f'./subject/{DEFAULT_SAVE_FILE}')
     assert path_to_file.is_file()
 
-    result = runner.invoke(app, ['scan', '-L', 'node_modules', './subject', '--save-path', './subject/.nr-todo'])
+    result = runner.invoke(app, ['scan', '-vL', 'node_modules', './subject', '--save-path', './subject/.nr-todo'])
 
     assert result.exit_code == 0
     assert output in result.stdout
@@ -174,7 +190,7 @@ def test_save_to_custom_directory():
     path_to_file = Path(f'./subject/{DEFAULT_SAVE_FILE}')
     assert path_to_file.is_file()
 
-    result = runner.invoke(app, ['scan', '-L', 'node_modules', './subject', '--save-path', './subject'])
+    result = runner.invoke(app, ['scan', '-vL', 'node_modules', './subject', '--save-path', './subject'])
 
     assert result.exit_code == 0
     assert output in result.stdout
@@ -208,6 +224,27 @@ def test_rm_default():
     assert 'Done flawlessly!' in result.stdout
 
     result = runner.invoke(app, ['scan', 'node_modules', './subject'])
+    assert result.exit_code == 1
+    assert 'Congrats' in result.stdout
+
+
+def test_rm_verbose():
+    output = ['Files and directories (include symlinks):',
+              '→ subject/node_modules',
+              '→ subject/symlink/node_modules',
+              '→ subject/file/node_modules',
+              '→ subject/sub/node_modules',
+              '→ subject/sub/3/node_modules',
+              '→ subject/sub/2/1/4/node_modules',
+              '→ subject/sub2/node_modules', ]
+    update_subject()
+    result = runner.invoke(app, ['rm', '-yv', 'node_modules', './subject'])
+
+    assert result.exit_code == 0
+    assert all([p in result.stdout for p in output])
+    assert 'Done flawlessly!' in result.stdout
+
+    result = runner.invoke(app, ['scan', '-v', 'node_modules', './subject'])
     assert result.exit_code == 1
     assert 'Congrats' in result.stdout
 
@@ -299,6 +336,42 @@ def test_remove_from_default_file():
     assert all([f in text for f in file])
 
     result = runner.invoke(app, ['rmf', '-y'])
+
+    assert result.exit_code == 0
+    assert all([p in result.stdout for p in file])
+    assert 'Done flawlessly!' in result.stdout
+
+    result = runner.invoke(app, ['scan', 'node_modules', './subject'])
+    assert result.exit_code == 1
+    assert 'Congrats' in result.stdout
+
+
+def test_remove_from_default_file_and_verbose():
+    output = 'Successfully saved list to ".nr-todo"'
+    file = [
+        'subject/node_modules',
+        'subject/symlink/node_modules',
+        'subject/file/node_modules',
+        'subject/sub/node_modules',
+        'subject/sub/3/node_modules',
+        'subject/sub/2/1/4/node_modules',
+        'subject/sub2/node_modules',
+    ]
+    update_subject()
+    result = runner.invoke(app, ['scan', '-v', 'node_modules', './subject', '--save-list'])
+
+    assert result.exit_code == 0
+    assert output in result.stdout
+
+    path_to_file = Path(f'./{DEFAULT_SAVE_FILE}')
+    assert path_to_file.is_file()
+
+    with open(path_to_file, 'r') as f:
+        text = f.read()
+
+    assert all([f in text for f in file])
+
+    result = runner.invoke(app, ['rmf', '-yv'])
 
     assert result.exit_code == 0
     assert all([p in result.stdout for p in file])
