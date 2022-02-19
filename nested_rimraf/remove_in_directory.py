@@ -3,7 +3,7 @@ import click_spinner
 import shutil
 
 from pathlib import Path
-from typing import Optional, Iterable
+from typing import Optional, List
 from .utils import get_matches, process_directory, report_matches, raise_error, DEFAULT_SAVE_FILE
 
 
@@ -77,7 +77,7 @@ def remove_from_file(
     remove_matches(matches, ignore_errors, agree, verbose)
 
 
-def remove_matches(matches: Iterable[Path], ignore_errors: bool, agree: bool, verbose: bool):
+def remove_matches(matches: List[Path], ignore_errors: bool, agree: bool, verbose: bool):
     if agree:
         is_ready = True
     else:

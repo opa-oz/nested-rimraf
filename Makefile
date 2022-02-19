@@ -33,8 +33,9 @@ build: ## Build package
 
 clear: ## Clear repository
 	rm -rf "${current_dir}/subject"
+	rm -f "${current_dir}/.nr-todo"
 
-fill: ## Fill subject directory
+fill: clear ## Fill subject directory
 	mkdir -p "${current_dir}/subject/node_modules"
 	touch "${current_dir}/subject/node_modules/enemy.txt"
 	mkdir -p "${current_dir}/subject/sub/node_modules"
@@ -45,8 +46,14 @@ fill: ## Fill subject directory
 	touch "${current_dir}/subject/sub/3/node_modules/enemy.txt"
 	mkdir -p "${current_dir}/subject/sub/2/1/4/node_modules"
 	touch "${current_dir}/subject/sub/2/1/4/node_modules/enemy.txt"
+	mkdir -p "${current_dir}/subject/file"
+	touch "${current_dir}/subject/file/node_modules"
+	mkdir -p "${current_dir}/subject/symlink/example"
+	touch "${current_dir}/subject/symlink/example/enemy.txt"
+	ln -s "${current_dir}/subject/symlink/example" "${current_dir}/subject/symlink/node_modules"
+
 
 # ========== Package ========== #
 
-scan: ## Scan directories
-	nested-rimraf --help
+test: ## Scan directories
+	pytest

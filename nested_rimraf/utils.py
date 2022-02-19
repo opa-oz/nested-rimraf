@@ -1,7 +1,7 @@
 import typer
 import click_spinner
 
-from typing import Callable, Optional, Iterable
+from typing import Callable, Optional, List
 from pathlib import Path
 
 DEFAULT_SAVE_FILE: str = '.nr-todo'
@@ -25,11 +25,11 @@ def process_directory(directory: Optional[str]) -> Path:
     return dir_path
 
 
-def get_matches(target: str, dir_path: Path, dir_only: bool, no_symlinks: bool) -> Iterable[Path]:
+def get_matches(target: str, dir_path: Path, dir_only: bool, no_symlinks: bool) -> List[Path]:
     matches = []
 
     with click_spinner.spinner():
-        matches += dir_path.glob(f'**/{target}')
+        matches += list(dir_path.glob(f'**/{target}'))
 
         if dir_only:
             directory_filter: Callable[[Path], bool] = lambda x: x.is_dir()
@@ -39,19 +39,19 @@ def get_matches(target: str, dir_path: Path, dir_only: bool, no_symlinks: bool) 
             no_symlink_filter: Callable[[Path], bool] = lambda x: not x.is_symlink()
             matches = filter(no_symlink_filter, matches)
 
-    return matches
+    return list(matches)
 
 
 def report_matches(
-    matches: Iterable[Path],
+    matches: List[Path],
     target: Optional[str],
     dir_path: Optional[Path],
     dir_only: bool,
     no_symlinks: bool
 ):
-    if sum(1 for _ in matches) == 0 and target:
+    if len(matches) == 0 and target:
         typer.secho(f'Congrats! There are no "{target}"s inside "{dir_path}"', fg=typer.colors.GREEN)
-        return 0
+        raise typer.Abort()
 
     prefix = 'Files and directories'
     if dir_only:
