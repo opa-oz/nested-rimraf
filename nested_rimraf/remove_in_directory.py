@@ -76,6 +76,8 @@ def remove_from_file(
     report_matches(matches, None, None, dir_only, no_symlinks)
     remove_matches(matches, ignore_errors, agree, verbose)
 
+    typer.secho('Done flawlessly!', fg=typer.colors.GREEN)
+
 
 def remove_matches(matches: List[Path], ignore_errors: bool, agree: bool, verbose: bool):
     if agree:
