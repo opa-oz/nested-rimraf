@@ -3,7 +3,7 @@
 Nested rimraf CLI app.
 
 Use it to clear your junk in nested directories
-Looking for target file/directory through specified tree and then remove everything
+Looks for target file/directory through specified tree and then removes everything
 
 ## Practice
 

@@ -6,8 +6,8 @@
 mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 current_dir := $(patsubst %/,%,$(dir $(mkfile_path)))
 
-# include .env
-# export $(shell sed 's/=.*//' .env)
+include .env
+export $(shell sed 's/=.*//' .env)
 
 help: ## This help
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -24,10 +24,22 @@ install_poetry: ## Install Poetry
 version: ## Check Poetry version
 	poetry --version
 
+config: ## Poetry config token
+	poetry config pypi-token.pypi $$PYPI
+
+publish: ## Poetry build and publish
+	poetry publish --build
+
 # ========== Build ========== #
 
 build: ## Build package
 	poetry build
+
+test: ## Run tests
+	pytest
+
+docs: ## Generate docs
+	typer nested_rimraf.main utils docs --output DOCS.md --name nested-rimraf
 
 # ========== Utils ========== #
 
@@ -51,9 +63,3 @@ fill: clear ## Fill subject directory
 	mkdir -p "${current_dir}/subject/symlink/example"
 	touch "${current_dir}/subject/symlink/example/enemy.txt"
 	ln -s "${current_dir}/subject/symlink/example" "${current_dir}/subject/symlink/node_modules"
-
-
-# ========== Package ========== #
-
-test: ## Scan directories
-	pytest
