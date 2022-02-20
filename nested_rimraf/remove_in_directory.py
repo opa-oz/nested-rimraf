@@ -92,8 +92,8 @@ def remove_matches(matches: List[Path], ignore_errors: bool, agree: bool, verbos
     if verbose:
         typer.secho("Let's clean up this mess, shall we?\n")
 
-    with click_spinner.spinner():
-        for match in matches:
+    with typer.progressbar(matches) as progress:
+        for match in progress:
             try:
                 if match.is_file() or match.is_symlink():
                     if verbose:

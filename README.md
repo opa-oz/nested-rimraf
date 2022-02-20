@@ -5,6 +5,10 @@ Nested rimraf CLI app.
 Use it to clear your junk in nested directories
 Looks for target file/directory through specified tree and then removes everything
 
+<a href="https://pypi.org/project/nested-rimraf" target="_blank">
+    <img src="https://img.shields.io/pypi/v/nested-rimraf?color=%2334D058&label=pypi%20package" alt="Package version">
+</a>
+
 ## Practice
 
 **Imaginary folder structure:**
