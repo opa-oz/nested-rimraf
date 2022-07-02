@@ -1,9 +1,12 @@
 [tool.poetry]
 name = "nested-rimraf"
-version = "0.1.0"
-description = ""
+version = "1.0.0"
+description = "Use it to clear your junk in nested directories Looks for target file/directory through specified tree and then removes everything"
 authors = ["Vladimir Levin <opaozhub@gmail.com>"]
 readme = "README.md"
+license = "LICENSE"
+repository = "https://github.com/opa-oz/nested-rimraf"
+documentation = "https://github.com/opa-oz/nested-rimraf/blob/main/DOCS.md"
 
 [tool.poetry.scripts]
 nested-rimraf = 'nested_rimraf.main:app'
@@ -14,7 +17,7 @@ typer = { extras = ["all"], version = "^0.4.0" }
 click-spinner = "^0.1.10"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
+pytest = "^7.1.2"
 pytest-cov = "^3.0.0"
 
 [build-system]
